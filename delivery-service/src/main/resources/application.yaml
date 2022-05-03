@@ -1,0 +1,14 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: prod
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/delivery}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:300800}
+
+  jpa:
+    hibernate:
+      ddl-auto: create

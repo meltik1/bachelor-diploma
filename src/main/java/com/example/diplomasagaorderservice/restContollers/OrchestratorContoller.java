@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -34,7 +35,7 @@ public class OrchestratorContoller {
     }
 
     @GetMapping("statistics")
-    public ResponseEntity<StatisticsResponseDTO> getStatistics() {
+    public ResponseEntity<StatisticsResponseDTO> getStatistics() throws IOException {
         StatisticsResponseDTO statistics = statisticsService.getStatistics();
         return new ResponseEntity<>(statistics, HttpStatus.OK);
     }

@@ -1,19 +1,34 @@
+mail:
+  admin-email: niki10222@bk.ru
+  from: smtp.tests.zuevc@gmail.com
+  host: smtp.gmail.com
+  password: Glass71836
+  port: 587
+  protocol: smtp
+  smtp:
+    auth: true
+    debug: true
+    starttls.enable: true
+    starttls.required: true
+  username: smtp.tests.zuev@gmail.com
 server:
   port: 8080
-
+  tomcat:
+    threads:
+      max: 14
+      min-spare: 8
+services:
+  delivery:
+    uri: http://localhost:8082
+  payment:
+    uri: http://localhost:8084
 spring:
-  profiles:
-    active: prod
   datasource:
+    password: ${DB_PASSWORD:300800}
     url: ${DB_URL:jdbc:postgresql://localhost:5432/orders}
     username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:300800}
   jpa:
     hibernate:
       ddl-auto: create
-
-services:
-  payment:
-    uri: 'http://localhost:8084'
-  delivery:
-    uri: 'http://localhost:8082'
+  profiles:
+    active: prod

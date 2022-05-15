@@ -5,6 +5,7 @@ import com.example.diplomasagaorderservice.models.DTOs.ErlangResponseDTO;
 import com.example.diplomasagaorderservice.restContollers.responses.StatisticsResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,23 @@ public class StatisticsService {
 
     private StopWatch stopWatch;
 
-    @Autowired
+    @Value("${server.tomcat.threads.min-spare}")
+    private String workerThreadsNumber;
+
+    @Value("${mail.admin-email}")
+    private String email;
+
     ErlangService erlangService;
 
-    public StatisticsService(ErlangService erlangService) {
+
+    EmailNotificationServiceImpl emailNotificationService;
+
+    @Autowired
+    public StatisticsService(ErlangService erlangService, EmailNotificationServiceImpl emailNotificationService) {
         this.processingTimes = new ArrayList<>();
         this.statisticsResponseDTO = null;
         this.stopWatch = new StopWatch();
+        this.emailNotificationService = emailNotificationService;
         stopWatch.start();
         this.erlangService = erlangService;
     }
@@ -66,6 +77,23 @@ public class StatisticsService {
         return execute;
     }
 
+    private void sendMessage(StatisticsResponseDTO statisticsResponseDTO) {
+        String message = String.format("Приложение не справляется с нагрузкой \n" +
+                "Среднее время обработки {} \n" +
+                "Интенсивность запросов {} \n " +
+                "Необходимо повышение CPU до {}", statisticsResponseDTO.getAverageProcessing(), statisticsResponseDTO.getRequestsIntensivity(), statisticsResponseDTO.getChannelsNumber());
+
+        emailNotificationService.send(email, "Резкое повышение нагрузки на SAGA координатор", message);
+    }
+
+    private Boolean checkLatency(Integer channelsNumber) {
+        Integer threads = Integer.parseInt(workerThreadsNumber);
+        if (channelsNumber > threads) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
     @Scheduled(fixedDelay = 30000, initialDelay = 30000)
     public void gainStatistics() throws IOException {
         double average = processingTimes.stream().mapToLong(x -> x.longValue()).average().orElse(0)/1000.0;
@@ -87,6 +115,10 @@ public class StatisticsService {
             this.statisticsResponseDTO.setAverageProcessing(average*1000);
             this.statisticsResponseDTO.setChannelsNumber(execute.getChannelsNumber());
             this.statisticsResponseDTO.setRequestsIntensivity(averageIncome);
+
+            if (checkLatency(statisticsResponseDTO.getChannelsNumber())) {
+                sendMessage(statisticsResponseDTO);
+            }
         }
 
         processingTimes.clear();

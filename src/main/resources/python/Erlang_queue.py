@@ -2,8 +2,6 @@ import math
 import json
 import sys
 
-
-
 def E(l, mu, v):
     a = l/mu
     znam = 1
@@ -17,12 +15,15 @@ def sigma(v, a):
     return a/v
 
 def recursionE(r, a):
-    if r == 0:
-        return 1
-
-    E_from_prev = recursionE(r-1, a)
-    result = a*E_from_prev/(r+a*E_from_prev)
-    return result
+    e_from_prev = 1
+    results = 1
+    for i in range(1, r+1):
+        results = a * e_from_prev/(r+a*e_from_prev)
+        e_from_prev = results
+    #
+    # E_from_prev = recursionE(r-1, a)
+    # result = a*E_from_prev/(r+a*E_from_prev)
+    return results
 
 def D(a,v, E):
     result = v * E / (v - a*(1 -E))
@@ -32,7 +33,6 @@ def get_channels_number_that_less_then(percent, l, average_time,  t):
     mu = 1/average_time
 
     a = l/mu
-    print(a)
     channels = math.ceil(a)
 
     E = recursionE(channels, a)
@@ -52,7 +52,7 @@ def get_channels_number_that_less_then(percent, l, average_time,  t):
 
 if __name__ == '__main__':
     #Интенсивность поступления
-    lambda_var = float(sys.argv[1])*30
+    lambda_var = float(sys.argv[1])
     #Интенсивность обработки
     mu_var = float(sys.argv[2])
 

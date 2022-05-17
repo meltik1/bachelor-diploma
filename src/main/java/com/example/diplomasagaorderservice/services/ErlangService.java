@@ -37,7 +37,7 @@ public class ErlangService {
     }
 
     private String getPythonScriptPathWithArgs(String filename) {
-        File file = new File("src/test/resources/python/" + filename);
+        File file = new File("src/main/resources/python/" + filename);
 
         return String.format("%s", file.getAbsolutePath()) ;
     }

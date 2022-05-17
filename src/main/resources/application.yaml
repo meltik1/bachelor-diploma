@@ -15,8 +15,10 @@ server:
   port: 8080
   tomcat:
     threads:
-      max: 14
-      min-spare: 8
+      max: 200
+      min-spare: 10
+    max-connections: 50000
+    accept-count: 10000
 services:
   delivery:
     uri: http://localhost:8082

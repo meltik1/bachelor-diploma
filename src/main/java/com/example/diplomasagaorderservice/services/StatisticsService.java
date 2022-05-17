@@ -94,7 +94,7 @@ public class StatisticsService {
         return Boolean.FALSE;
     }
 
-    @Scheduled(fixedDelay = 30000, initialDelay = 30000)
+    @Scheduled(fixedDelay = 30000, initialDelay = 40000)
     public void gainStatistics() throws IOException {
         double average = processingTimes.stream().mapToLong(x -> x.longValue()).average().orElse(0)/1000.0;
         double averageIncome = processingTimes.size()/30.0;

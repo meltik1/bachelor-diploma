@@ -8,8 +8,6 @@ def E(l, mu, v):
     for i in range(1, v+1):
         znam += math.pow(a, i) / math.factorial(i)
     chisl = math.pow(a, v) / math.factorial(v)
-    print("Доля потерянных заявок \n")
-    print(chisl/znam)
 
 def sigma(v, a):
     return a/v
@@ -41,10 +39,10 @@ def get_channels_number_that_less_then(percent, l, average_time,  t):
     while real_percentage < percent:
         channels += 1
         E = recursionE(channels, a)
-        print("D equals: ", D(a,channels,E))
+
         res = 1 - D(a,channels, E)*math.pow(math.e, -channels*mu*t*(1-sigma(channels, a)))
         real_percentage = res
-        print(real_percentage)
+
 
 
 

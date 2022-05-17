@@ -20,6 +20,7 @@ public class DeliveryService {
 
     CouriersRepository couriersRepository;
 
+    private Random random = new Random();
     OrdersRepository ordersRepository;
 
     OrdersToCouriersRepository ordersToCouriersRepository;
@@ -31,14 +32,14 @@ public class DeliveryService {
         this.ordersToCouriersRepository = ordersToCouriersRepository;
     }
 
-    public Couriers assignCourrier(OrderDTO orderDTO) {
+    public Couriers assignCourrier(OrderDTO orderDTO) throws InterruptedException {
         Orders orders = orderDTO.toEntity();
         //List<Couriers> allByCouriersStatus_free = couriersRepository.findAllByCouriersStatus_Free();
         List<Couriers> all = couriersRepository.findAll();
 
         Random random = new Random();
         Couriers courier = all.get(random.nextInt(all.size() ));
-
+        Thread.sleep(1000);
         ordersRepository.save(orders);
 
         OrdersToCuriers ordersToCuriers = new OrdersToCuriers();

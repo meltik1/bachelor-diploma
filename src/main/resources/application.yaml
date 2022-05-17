@@ -15,10 +15,15 @@ server:
   port: 8080
   tomcat:
     threads:
-      max: 200
+      max: 15
       min-spare: 10
     max-connections: 50000
     accept-count: 10000
+    accesslog:
+      enabled: true
+      buffered: false
+      directory: logs
+    basedir: logs
 services:
   delivery:
     uri: http://localhost:8082

@@ -39,7 +39,7 @@ public class DeliveryService {
 
         Random random = new Random();
         Couriers courier = all.get(random.nextInt(all.size() ));
-        Thread.sleep(1000);
+        Thread.sleep(random.nextInt(1000));
         ordersRepository.save(orders);
 
         OrdersToCuriers ordersToCuriers = new OrdersToCuriers();

@@ -38,7 +38,7 @@ public class OrchestratorContoller {
 
     @GetMapping("statistics")
     public ResponseEntity<StatisticsResponseDTO> getStatistics() throws IOException {
-        StatisticsResponseDTO statistics = statisticsService.getStatistics();
+        StatisticsResponseDTO statistics = statisticsService.getStatistics("12");
         return new ResponseEntity<>(statistics, HttpStatus.OK);
     }
 }

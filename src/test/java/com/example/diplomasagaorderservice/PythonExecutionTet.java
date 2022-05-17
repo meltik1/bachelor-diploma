@@ -9,11 +9,56 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PythonExecutionTet {
 
+
+    @Test
+    public void simpleTest() throws IOException {
+
+        String command = "netstat -an && findstr :8080";
+        Process process = Runtime.getRuntime()
+                .exec(String.format(command));
+        BufferedReader inStreamReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        Integer numberOfConnections = 0;
+        String line;
+        while((line = inStreamReader.readLine()) != null){
+
+           System.out.println(line);
+        }
+    }
+
+    @Test
+    public void givenProcessBuilder_whenStartingPipeline_thenSuccess()
+            throws IOException, InterruptedException {
+        List builders = Arrays.asList(
+
+                new ProcessBuilder( "netstat", "-an"));
+
+        List<String> strings = new ArrayList<>();
+        List processes = ProcessBuilder.startPipeline(builders);
+        Process last = (Process) processes.get(processes.size() - 1);
+
+        BufferedReader inStreamReader = new BufferedReader(new InputStreamReader(last.getInputStream()));
+
+        Integer numberOfConnections = 0;
+        String line;
+        while((line = inStreamReader.readLine()) != null){
+
+            strings.add(line);
+        };
+
+        Long connectionsSize = strings.stream().filter(x -> x.contains(":8080")).count();
+        connectionsSize-=2;
+        connectionsSize/=2;
+
+
+    }
     @Test
     public void execute() throws IOException {
 

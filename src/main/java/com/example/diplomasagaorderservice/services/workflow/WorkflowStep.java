@@ -1,10 +1,12 @@
 package com.example.diplomasagaorderservice.services.workflow;
 
+import reactor.core.publisher.Mono;
+
 public interface WorkflowStep {
 
     StepStatus getStepStatus();
 
-    Boolean process();
+    Mono<Boolean> process();
 
-    Boolean revert();
+    Mono<Boolean> revert();
 }

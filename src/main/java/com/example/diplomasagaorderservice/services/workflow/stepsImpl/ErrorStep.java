@@ -2,6 +2,7 @@ package com.example.diplomasagaorderservice.services.workflow.stepsImpl;
 
 import com.example.diplomasagaorderservice.services.workflow.StepStatus;
 import com.example.diplomasagaorderservice.services.workflow.WorkflowStep;
+import reactor.core.publisher.Mono;
 
 public class ErrorStep implements WorkflowStep {
 
@@ -13,14 +14,14 @@ public class ErrorStep implements WorkflowStep {
     }
 
     @Override
-    public Boolean process() {
+    public Mono<Boolean> process() {
         this.stepStatus = StepStatus.FAILED;
-        return Boolean.FALSE;
+        return Mono.just(Boolean.FALSE);
     }
 
     @Override
-    public Boolean revert() {
+    public Mono<Boolean> revert() {
         this.stepStatus = StepStatus.COMPLETE;
-        return Boolean.TRUE;
+        return Mono.just(Boolean.TRUE);
     }
 }

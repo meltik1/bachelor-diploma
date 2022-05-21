@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("delivery")
@@ -23,17 +24,17 @@ public class DeliveryController {
     DeliveryService deliveryService;
 
     @PostMapping
-    public ResponseEntity<DeliveryResponseDTO> assignCourrier(@RequestBody OrderDTO orderDTO) {
+    public Mono<ResponseEntity<DeliveryResponseDTO>> assignCourrier(@RequestBody OrderDTO orderDTO) {
         log.info("Assigning courier to order {}", orderDTO.getId());
         try {
             Couriers couriers = deliveryService.assignCourrier(orderDTO);
 
             DeliveryResponseDTO deliveryResponseDTO = new DeliveryResponseDTO(couriers.getCourierName(), ResponseStatus.SUCCESS);
-            return new ResponseEntity<>(deliveryResponseDTO, HttpStatus.OK);
+            return Mono.just(new ResponseEntity<>(deliveryResponseDTO, HttpStatus.OK));
         }
         catch (Exception exception) {
             DeliveryResponseDTO deliveryResponseDTO = new DeliveryResponseDTO(exception.getMessage(), ResponseStatus.FAILED);
-            return new ResponseEntity<>(deliveryResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Mono.just(new ResponseEntity<>(deliveryResponseDTO, HttpStatus.OK));
         }
     }
 

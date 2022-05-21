@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +26,8 @@ public class OrderDTO  {
     private Double price;
 
     private OrderStatus orderStatus;
+
+    private Long startTime;
 
     public Orders toEntity() {
         Orders order = new Orders();

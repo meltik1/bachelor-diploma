@@ -18,9 +18,6 @@ def recursionE(r, a):
     for i in range(1, r+1):
         results = a * e_from_prev/(r+a*e_from_prev)
         e_from_prev = results
-    #
-    # E_from_prev = recursionE(r-1, a)
-    # result = a*E_from_prev/(r+a*E_from_prev)
     return results
 
 def D(a,v, E):
@@ -39,7 +36,6 @@ def get_channels_number_that_less_then(percent, l, average_time,  t):
     while real_percentage < percent:
         channels += 1
         E = recursionE(channels, a)
-
         res = 1 - D(a,channels, E)*math.pow(math.e, -channels*mu*t*(1-sigma(channels, a)))
         real_percentage = res
 

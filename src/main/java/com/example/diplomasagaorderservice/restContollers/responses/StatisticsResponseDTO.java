@@ -14,5 +14,7 @@ public class StatisticsResponseDTO {
 
     private Double averageProcessing;
 
+    private Double averageTimeInQueue;
+
     private Integer channelsNumber;
 }

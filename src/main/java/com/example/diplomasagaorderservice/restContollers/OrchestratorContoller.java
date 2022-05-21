@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Date;
 
 @RestController
 @RequestMapping("order")
@@ -27,18 +29,25 @@ public class OrchestratorContoller {
 
 
     @PostMapping
-    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+    public Mono<OrderResponseDTO> createOrder(@RequestBody OrderDTO orderDTO) {
 
+        Date startProcessingTime = new Date();
         Instant start = Instant.now();
-        OrderResponseDTO order = orchestratorService.createOrder(orderDTO);
+        Mono<OrderResponseDTO> order = orchestratorService.createOrder(orderDTO);
         Instant finish = Instant.now();
-        statisticsService.addMeasuremnt(Duration.between(start, finish).toMillis());
-        return new ResponseEntity<>(order,HttpStatus.OK);
+        statisticsService.addMeasuremnt(Duration.between(start, finish).toMillis(), startProcessingTime.getTime() - orderDTO.getStartTime());
+        return  order;
     }
 
     @GetMapping("statistics")
-    public ResponseEntity<StatisticsResponseDTO> getStatistics() throws IOException {
+    public Mono<ResponseEntity<StatisticsResponseDTO>> getStatistics() throws IOException {
         StatisticsResponseDTO statistics = statisticsService.getStatistics();
-        return new ResponseEntity<>(statistics, HttpStatus.OK);
+        return Mono.just(new ResponseEntity<>(statistics, HttpStatus.OK));
+    }
+
+    @GetMapping("reset")
+    public  ResponseEntity<Void> resetTime() {
+        statisticsService.resetTime();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
